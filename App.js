@@ -6,19 +6,41 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
   TouchableOpacity,
   FlatList,
+  Platform,
 } from 'react-native';
 
+import * as RNIap from 'react-native-iap';
+
+const itemSkus = Platform.select({
+  ios: ['com.cooni.point1000', 'com.cooni.point5000'],
+  android: [
+    'android.test.purchased',
+    'android.test.canceled',
+    'android.test.refunded',
+    'android.test.item_unavailable',
+  ],
+});
+
 const App = () => {
+  const [product, setProduct] = useState({});
+
+  useEffect(async () => {
+    try {
+      const response = await RNIap.getProducts(itemSkus);
+      console.log(response);
+    } catch (e) {
+      console.log('error:: ', e);
+    }
+  });
+
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity style={styles.prod_btn}>
